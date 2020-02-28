@@ -11,7 +11,17 @@ function string download_current_csv_as_str (const string URL)
     endif
 end function
 
-function string write_data_string (const string data_string)
+function string process_date_header (const string data_raw)
+    /* Headers for dates are in format %m/%d/%y. These cannot be read 
+    by gretl due to the "/" char. We substitute this header. */
+    
+    string match = "(\d+)/(\d+)/(\d{2})"
+    string repl = "date_20\3-\1-\2"
+    return regsub(data_raw, match, repl)
+end function
+
+
+function string data_string_to_file (const string data_string)
     string name_tmp_file
     outfile --tempfile=name_tmp_file
         print data_string
@@ -84,4 +94,17 @@ function void arima_forecast (const series y,
         printf "set title \"Confirmed cases (ARIMA(%d,%d,%d), 90\% forecast interval)\"", \
           p, d, q
     end plot --output=display
+end function
+
+# FIXME: deprecated??
+function matrix get_dates (const list date_series)
+    /* Read out series name of date series, and retrieve the 
+    date integer (ISO8601 style). */
+
+    matrix mdate = NA * zeros(nelem(date_series))
+    loop foreach i date_series -q
+        mdate[i] = atof(strsub(varnames(date_series)[i], "date_", ""))
+    endloop
+    
+    return mdate
 end function

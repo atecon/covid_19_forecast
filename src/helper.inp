@@ -27,7 +27,6 @@ function strings get_country_names (const series CountryRegion)
     loop foreach i countries -q
         string str = tolower(strstrip(countries[i]))
         str = strsub(str, " ", "_")
-        str
         countries[i] = str
     endloop
 
@@ -35,7 +34,54 @@ function strings get_country_names (const series CountryRegion)
 end function
 
 function void print_countries (const strings countries)
+    printf "\nData covers the following countries/ regions:\n"
     loop foreach i countries -q
         printf "\n$i"
     endloop
+end function
+
+function string aggregate_data_and_store_csv (const list data_values)
+/* Each row of a series refers to confirmed cases in the i-th region,
+      and each series captures the confirmed cases over time. */
+
+    matrix mat = {data_values}
+    matrix daily_sums = sumc(mat)'
+    matrix non_zero_regions_per_day = sumc((mat .> 0))'
+    daily_sums ~= non_zero_regions_per_day
+
+    printf "\nData includes information over %d days\n", rows(daily_sums)
+    cnameset(daily_sums, "cases_confirmed non_zero_regions")
+    string filename = "aggregated_timeseries.csv"
+    mat2data(daily_sums, "aggregated_timeseries.csv")
+    printf "Succesfully stored aggregated data in file:\n\
+      %s/%s", $workdir, filename
+
+    return filename
+end function
+
+function void arima_forecast (const series y,
+                              const int p[0::],
+                              const int d[0::],
+                              const int q[0::],
+                              const int MAX_HORIZON[1::])
+    /* Estimate arima type of model and forecast
+    out-of-sample. */
+
+    smpl ; -MAX_HORIZON
+    arima p q d ; y
+
+    # Plot multistep  interval forecasts
+    fcast --out-of-sample --dynamic
+    smpl full
+    series fc_point = $fcast
+    series fc_se = $fcse    
+    list L = y fc_point
+    plot L
+        options with-lines time-series single-yaxis
+        options band-style=fill
+        options band=fc_point,fc_se,1.69726
+        printf "set ylabel \"%s\"", argname(y)
+        printf "set title \"Confirmed cases (ARIMA(%d,%d,%d), 90\% forecast interval)\"", \
+          p, d, q
+    end plot --output=display
 end function

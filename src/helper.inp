@@ -1,0 +1,41 @@
+function string download_current_csv_as_str (const string URL)
+    /* Load raw csv holding latest data. Return string holding information. */
+
+    bundle req
+    string req.URL = URL
+    scalar err = curl(&req)
+    if err
+        funcerr(sprintf("Failed to download from URL:\n%s\n", URL))
+    else
+        return req.output
+    endif
+end function
+
+function string write_data_string (const string data_string)
+    string name_tmp_file
+    outfile --tempfile=name_tmp_file
+        print data_string
+    end outfile
+    printf "Output went to %s\n", name_tmp_file
+
+    return name_tmp_file
+end function
+
+function strings get_country_names (const series CountryRegion)
+    /* Retrieve country/region names and process strings. */
+    strings countries = strvals(CountryRegion)
+    loop foreach i countries -q
+        string str = tolower(strstrip(countries[i]))
+        str = strsub(str, " ", "_")
+        str
+        countries[i] = str
+    endloop
+
+    return countries
+end function
+
+function void print_countries (const strings countries)
+    loop foreach i countries -q
+        printf "\n$i"
+    endloop
+end function

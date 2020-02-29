@@ -1,3 +1,16 @@
+function list add_future_observations (const list data_set,
+                                       const int MAX_HORIZON)
+    /*Add future observations of out-of-sample forecasting. */
+
+    list newobs = null
+    scalar last_v_id = 2 + nelem(data_set)
+    loop i=(1+last_v_id)..(MAX_HORIZON+last_v_id) -q
+        list newobs += genseries(sprintf("v%d", i), NA)
+    endloop
+    return newobs
+end function
+
+
 function void print_panel_details (void)
     printf "\n*** Your panel is ready for analysis.\n"
     printf "\n*** Number of country-province combinations: %d\n", $nobs / $pd
@@ -22,38 +35,6 @@ function scalar time_dimension (const list data_set)
     return nelem(L)
 end function
 
-function string download_current_csv_as_str (const string URL)
-    /* Load raw csv holding latest data. Return string holding information. */
-
-    bundle req
-    string req.URL = URL
-    scalar err = curl(&req)
-    if err
-        funcerr(sprintf("Failed to download from URL:\n%s\n", URL))
-    else
-        return req.output
-    endif
-end function
-
-function string process_date_header (const string data_raw)
-/* Headers for dates are in format %m/%d/%y. These cannot be read
-    by gretl due to the "/" char. We substitute this header. */
-
-    string match = "(\d+)/(\d+)/(\d{2})"
-    string repl = "date_20\3-\1-\2"
-    return regsub(data_raw, match, repl)
-end function
-
-
-function string data_string_to_file (const string data_string)
-    string name_tmp_file
-    outfile --tempfile=name_tmp_file
-        print data_string
-    end outfile
-    printf "Output went to %s\n", name_tmp_file
-
-    return name_tmp_file
-end function
 
 function strings get_distinct_names (const series x)
     /* Retrieve country/region names and process strings. */
@@ -143,21 +124,9 @@ function void plot_arima_forecast (const series y,
         options band-style=fill
         options band=fc_point,fc_se,1.69726
         literal set key top left
+        literal set grid
         printf "set ylabel \"%s\"", argname(y)
         printf "set title \"%s\"", title
     end plot --output="@filename"
 end function
 
-
-# FIXME: deprecated??
-function matrix get_dates (const list date_series)
-/* Read out series name of date series, and retrieve the
-    date integer (ISO8601 style). */
-
-    matrix mdate = NA * zeros(nelem(date_series))
-    loop foreach i date_series -q
-        mdate[i] = atof(strsub(varnames(date_series)[i], "date_", ""))
-    endloop
-
-    return mdate
-end function

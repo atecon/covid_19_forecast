@@ -1,3 +1,27 @@
+function void print_panel_details (void)
+    printf "\n*** Your panel is ready for analysis.\n"
+    printf "\n*** Number of country-province combinations: %d\n", $nobs / $pd
+    printf "\n*** Number of observations for each country-province: %d\n", $pd
+end function
+
+
+function series fill_panel_gaps_of_constant (series x)
+/* Due to stacking the original data for obtaining a panel,
+      some series have gaps now which need to be filled. */
+
+    series ret = x
+    ret = (missing(ret)==1) ? pmin(ret) : ret
+
+    return ret
+end function
+
+function scalar time_dimension (const list data_set)
+    /* Determine time dimension of data set. */
+
+    list L = v*
+    return nelem(L)
+end function
+
 function string download_current_csv_as_str (const string URL)
     /* Load raw csv holding latest data. Return string holding information. */
 
@@ -12,9 +36,9 @@ function string download_current_csv_as_str (const string URL)
 end function
 
 function string process_date_header (const string data_raw)
-    /* Headers for dates are in format %m/%d/%y. These cannot be read 
+/* Headers for dates are in format %m/%d/%y. These cannot be read
     by gretl due to the "/" char. We substitute this header. */
-    
+
     string match = "(\d+)/(\d+)/(\d{2})"
     string repl = "date_20\3-\1-\2"
     return regsub(data_raw, match, repl)
@@ -31,22 +55,23 @@ function string data_string_to_file (const string data_string)
     return name_tmp_file
 end function
 
-function strings get_country_names (const series CountryRegion)
+function strings get_distinct_names (const series x)
     /* Retrieve country/region names and process strings. */
-    strings countries = strvals(CountryRegion)
-    loop foreach i countries -q
-        string str = tolower(strstrip(countries[i]))
+    strings S = strvals(x)
+    loop foreach i S -q
+        string str = tolower(strstrip(S[i]))
         str = strsub(str, " ", "_")
-        countries[i] = str
+        str = strsub(str, ",", "")
+        S[i] = str
     endloop
 
-    return countries
+    return S
 end function
 
 function void print_countries (const strings countries)
-    printf "\nData covers the following countries/ regions:\n"
+    printf "\nData covers the following countries:\n"
     loop foreach i countries -q
-        printf "\n$i"
+        printf "%s\n", countries[i]
     endloop
 end function
 
@@ -69,7 +94,7 @@ function string aggregate_data_and_store_csv (const list data_values)
     return filename
 end function
 
-function void arima_forecast (const series y,
+function list arima_forecast (const series y,
                               const list xlist[null],
                               const int p[0::],
                               const int d[0::],
@@ -78,38 +103,61 @@ function void arima_forecast (const series y,
     /* Estimate arima type of model and forecast
     out-of-sample. */
 
+    list L = null
+    
     if !exists(xlist)
         list xlist = null
     endif
 
     smpl ; -MAX_HORIZON
-    arima p q d ; y xlist
+    catch arima p d q; y xlist --quiet
+    if $error
+        catch arima 1 1 0 ; y xlist --quiet
+        if $error
+            return L
+        endif
+    endif
 
     # Plot multistep  interval forecasts
-    fcast --out-of-sample --dynamic
+    fcast --out-of-sample --dynamic --quiet
     smpl full
     series fc_point = $fcast
     series fc_se = $fcse    
+    list L = y fc_point fc_se
+
+    return L
+end function
+
+
+function void plot_arima_forecast (const series y,
+                                   const series fc_point,
+                                   const series fc_se,
+                                   const string title,
+                                   const string filename "Full path or 'display'")
     list L = y fc_point
+    string vname = sprintf("%s", argname(y))
+    setinfo y --graph-name=@vname
+
     plot L
         options with-lines time-series single-yaxis
         options band-style=fill
         options band=fc_point,fc_se,1.69726
+        literal set key top left
         printf "set ylabel \"%s\"", argname(y)
-        printf "set title \"Confirmed cases (ARIMA(%d,%d,%d), 90\% forecast interval)\"", \
-          p, d, q
-    end plot --output=display
+        printf "set title \"%s\"", title
+    end plot --output="@filename"
 end function
+
 
 # FIXME: deprecated??
 function matrix get_dates (const list date_series)
-    /* Read out series name of date series, and retrieve the 
+/* Read out series name of date series, and retrieve the
     date integer (ISO8601 style). */
 
     matrix mdate = NA * zeros(nelem(date_series))
     loop foreach i date_series -q
         mdate[i] = atof(strsub(varnames(date_series)[i], "date_", ""))
     endloop
-    
+
     return mdate
 end function

@@ -7,6 +7,10 @@ string DIR_WORK = "/home/at/git/covid_19_forecast" #<SET_PATH_HERE>		# e.g. "/ho
 string DATA_URL = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv"
 string INITIAL_DATE = "2020-01-22"			# 1st observation of dataset
 scalar MAX_HORIZON = 7			# multi-step OoS forecast horizon
+
+scalar ARIMA_P = 2
+scalar ARIMA_D = 1
+scalar ARIMA_Q = 1
 #===================
 
 set workdir @DIR_WORK
@@ -14,51 +18,121 @@ set workdir @DIR_WORK
 # include helper functions
 include "./src/helper.inp"
 # 3rd party library
-pkg install mat2data
+if $error
+    printf "\nDownload package 'mat2data'\n"
+    pkg install mat2data
+endif
 include mat2data.gfn
 
 
-# Download raw csv data and process its header
-string data_raw = download_current_csv_as_str(DATA_URL)
-string data_processed = process_date_header(data_raw)
-string filename = data_string_to_file(data_processed)
+# FIXME: reactivate
+#open @DATA_URL --preserve --quiet
+#store "abc.csv"
+open "abc.csv" -p -q
 
-# Open processed data
-open @filename --preserve --quiet
+# drop unnecessary series
+list variables_to_drop = Lat Long
+delete variables_to_drop
 
-strings countries = get_country_names(CountryRegion)
-print_countries(countries)
+# Data is arranged "by variable" -- construct a panel
+scalar N = $nobs					# cross-sectional dimension
+scalar T = time_dimension(dataset)	# time dimension
 
-*** HIER WEITERMACHEN ***
-series confirmed_cases = stack(date_*) #--length=$nobs
+# Stack data set + define panel
+series confirmed_cases = stack(v*)		# yields stacked cross-section dataset
+delete v*
+setobs N 1:1 --stacked-cross-section
 
+# Fill gaps in country series
+series country = fill_panel_gaps_of_constant(CountryRegion)
+series province = fill_panel_gaps_of_constant(ProvinceState)
 
+strings country_names = get_distinct_names(CountryRegion)
+strings province_names = get_distinct_names(ProvinceState)
+print_countries(country_names)
 
+# attache names to series
+stringify(country, country_names)
+stringify(province, province_names)
 
-# TODO: needed?
-/*
-list date_series = date_*
-matrix dates = get_dates(date_series)
-printf "\nInfo: First observation: %d\n Last observation: %d", min(dates), max(dates)
-*/
+# Clean up
+list drop = ProvinceState CountryRegion
+delete drop
 
-# take sum across regions for each day -- construct time-series
-list data_values = date_*
-string filename = aggregate_data_and_store_csv(data_values)
+genr unit			# cross-sectional index series
+genr time
+print_panel_details()
+#===========================================
 
-# Load time-series + plot
-open @filename --preserve --quiet
-setobs 7 @INITIAL_DATE --time-series
-gnuplot cases_confirmed non_zero_regions \
-  --time-series --with-lines --output=display
+# ANALYSIS
+series log_confirmed_cases = log(confirmed_cases)
 
+boxplot log_confirmed_cases time --factorized \
+  --output="./figures/boxplot_log_confirmed_cases_by_time.png"
+boxplot log_confirmed_cases unit --factorized \
+  --output="./figures/boxplot_log_confirmed_cases_by_unit.png"
 
-# Expost analysis + plot multistep  interval forecasts
+#panplot log_confirmed_cases --overlay --output=display
+
+#gnuplot cases_confirmed non_zero_regions \
+#  --time-series --with-lines --output=display
+
+# Compute ARIMA based forecasts for each country-province combination
+smpl full
+loop i=min(unit)..max(unit) --quiet
+
+    # define time-series set
+    smpl full
+    setobs unit time --panel-vars
+    smpl unit == $i --restrict
+    setobs 7 @INITIAL_DATE --time-series
+
+    *** HIER WEITERMACHEN ***
+
+    string cntry = strvals(country)[1]		# FIXME: 
+    string prov = strvals(province)[1]
+    printf "Start forecasting for:\n\
+      country '%s' and province '%s'\n", cntry, prov
+
+    if isconst(confirmed_cases)
+        printf "\nWarning: Target series is a constant for %s %s.\n\
+          No ARIMA model will be fitted.\n", cntry, prov
+    else
+        # Expost analysis + plot multistep  interval forecasts
+        list FC = arima_forecast(confirmed_cases, , \
+          ARIMA_P, ARIMA_D, ARIMA_Q, MAX_HORIZON)
+
+        if nelem(FC) == 0
+            printf "\nWarning: Target series includes only zeros for %s %s.\n\
+              No ARIMA model will be fitted.\n", cntry, prov
+        else
+            setobs 7 @INITIAL_DATE --time-series
+            string date_of_information = obslabel($t2 - MAX_HORIZON) 
+            date_of_information
+
+            string title = sprintf("%s - %s [ARIMA(%d,%d,%d), 90\% forecast interval]", \
+              cntry, prov, ARIMA_P, ARIMA_D, ARIMA_Q)
+            string filename = sprintf(\
+              "./figures/forecast_arima_%d%d%d_infodate_%s_maxhorizon_%d_%s_%s_expost.png",\
+              ARIMA_P, ARIMA_D, ARIMA_Q, date_of_information, \
+              MAX_HORIZON, cntry, prov)
+
+            plot_arima_forecast(confirmed_cases, fc_point, fc_se, title, filename)
+        endif
+
+    endif
+
+    if i == 2
+        stop
+    endif    
+
+endloop
+smpl full
+stop
 # ARIMA(2,0,1)
 arima_forecast(cases_confirmed, , 2, 0, 0, MAX_HORIZON)
 
 # ARIMA(2,1,1)
-arima_forecast(cases_confirmed, , 2, 1, 1, MAX_HORIZON)
 
 # Add future dates
 dataset addobs MAX_HORIZON
@@ -66,6 +140,7 @@ dataset addobs MAX_HORIZON
 arima_forecast(cases_confirmed, , 2, 0, 1, MAX_HORIZON)
 # ARIMA(2,1,1)
 arima_forecast(cases_confirmed, , 2, 1, 1, MAX_HORIZON)
+
 
 
 

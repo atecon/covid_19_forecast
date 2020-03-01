@@ -9,7 +9,7 @@ function void compile_markdown_plot_cmd (const strings stored_filename)
         string pic1 = stored_filename[counter]
         if i < nsteps
             string pic2 = stored_filename[counter + 1]
-            markdown_cmd += sprintf("<img src=\"%s\" width=\"425\"/> <img src=\"%s\" width=\"425\"/>\n", pic1, pic2)
+            markdown_cmd += sprintf("<img src=\"%s\" width=\"425\"/> <img src=\"%s\" width=\"425\"/>\n\n", pic1, pic2)
             counter = counter + 2
         else
             markdown_cmd += sprintf("<img src=\"%s\" width=\"425\"/>\n", pic1)

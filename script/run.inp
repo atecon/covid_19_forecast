@@ -117,13 +117,14 @@ loop i=min(unit)..max(unit) --quiet
         else
             setobs 7 @INITIAL_DATE --time-series
             string date_of_information = obslabel($t2 - MAX_HORIZON)
+            string label = sprintf("Conditional on %s", date_of_information)
+            setinfo fc_point --graph-name="@label"
 
-            string title = sprintf("%s - %s [ARIMA(%d,%d,%d), 90\% forecast interval]", \
+            string title = sprintf("%s-%s [ARIMA(%d,%d,%d), 90\% forecast interval]", \
               cntry, prov, ARIMA_P, ARIMA_D, ARIMA_Q)
             string filename = sprintf(\
-              "./figures/forecast_arima_%d%d%d_infodate_%s_maxhorizon_%d_%s_%s_expost.png",\
-              ARIMA_P, ARIMA_D, ARIMA_Q, date_of_information, \
-              MAX_HORIZON, cntry, prov)
+              "./figures/forecast_arima_%d%d%d_maxhorizon_%d_%s_%s_expost.png",\
+              ARIMA_P, ARIMA_D, ARIMA_Q, MAX_HORIZON, cntry, prov)
 
             plot_arima_forecast(confirmed_cases, fc_point, fc_se, title, filename)
         endif
@@ -168,6 +169,8 @@ loop i=min(unit)..max(unit) --quiet
         else
             setobs 7 @INITIAL_DATE --time-series
             string date_of_information = obslabel($t2 - MAX_HORIZON)
+            string label = sprintf("Conditional on %s", date_of_information)
+            setinfo fc_point --graph-name="@label"
 
             string title = sprintf("%s - %s [ARIMA(%d,%d,%d), 90\% forecast interval]", \
               cntry, prov, ARIMA_P, ARIMA_D, ARIMA_Q)

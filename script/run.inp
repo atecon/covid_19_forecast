@@ -23,13 +23,6 @@ endif
 
 # include helper functions
 include "./src/helper.inp"
-# 3rd party library
-if $error
-    printf "\nDownload package 'mat2data'\n"
-    pkg install mat2data
-endif
-include mat2data.gfn
-
 
 # Download and open latest dataset
 open @DATA_URL --preserve --quiet
@@ -74,10 +67,10 @@ print_panel_details()
 #=========
 series log_confirmed_cases = log(confirmed_cases)
 
-boxplot log_confirmed_cases time --factorized \
-  --output="./figures/boxplot_log_confirmed_cases_by_time.png"
-boxplot log_confirmed_cases unit --factorized \
-  --output="./figures/boxplot_log_confirmed_cases_by_unit.png"
+#boxplot log_confirmed_cases time --factorized \
+#  --output="./figures/boxplot_log_confirmed_cases_by_time.png"
+#boxplot log_confirmed_cases unit --factorized \
+#  --output="./figures/boxplot_log_confirmed_cases_by_unit.png"
 
 #panplot log_confirmed_cases --overlay --output=display
 

@@ -54,7 +54,7 @@ series province = fill_panel_gaps_of_constant(ProvinceState)
 strings country_names = get_distinct_names(CountryRegion)
 strings province_names = get_distinct_names(ProvinceState)
 
-# attache names to series
+# attach names to series
 stringify(country, country_names)
 stringify(province, province_names)
 
@@ -83,7 +83,7 @@ boxplot log_confirmed_cases unit --factorized \
 #gnuplot cases_confirmed non_zero_regions \
 #  --time-series --with-lines --output=display
 
-/*
+
 # Expost: Compute ARIMA based forecasts for each country-province combination
 #============================================================================
 smpl full
@@ -133,14 +133,13 @@ loop i=min(unit)..max(unit) --quiet
     endif
 endloop
 smpl full
-*/
 
 
 # Out-of-sample for the forthcoming days for each country-province combination
 #=============================================================================
 strings stored_filename = defarray()			# needed for compiling markdown command for plotting figures on github
 smpl full
-loop i=min(unit)..3 -q #max(unit) --quiet
+loop i=min(unit)..max(unit) --quiet
 
     # define time-series set for each country-province
     smpl full
@@ -191,8 +190,6 @@ endloop
 if COMPILE_MARKDOWN_CMD
     compile_markdown_plot_cmd(stored_filename)
 endif
-
-
 
 
 

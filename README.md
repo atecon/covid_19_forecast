@@ -1,4 +1,4 @@
-# covid_19_forecast
+# Time-series based 7-days ahead forecasts of (known) confirmed cases of the novel Coronavirus COVID-19 (2019-nCoV)
 
 Data provided by the Johns Hopkins University Center for Systems Science and Engineering (JHU CCSE) can be found here:
 https://github.com/CSSEGISandData/COVID-19

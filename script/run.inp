@@ -82,7 +82,7 @@ boxplot log_confirmed_cases unit --factorized \
 #gnuplot cases_confirmed non_zero_regions \
 #  --time-series --with-lines --output=display
 
-
+/*
 # Expost: Compute ARIMA based forecasts for each country-province combination
 #============================================================================
 smpl full
@@ -132,13 +132,14 @@ loop i=min(unit)..max(unit) --quiet
     endif
 endloop
 smpl full
-
+*/
 
 
 # Out-of-sample for the forthcoming days for each country-province combination
 #=============================================================================
+strings stored_filename = defarray()			# needed for compiling markdown command for plotting figures on github
 smpl full
-loop i=min(unit)..max(unit) --quiet
+loop i=min(unit)..3 -q #max(unit) --quiet
 
     # define time-series set for each country-province
     smpl full
@@ -176,15 +177,37 @@ loop i=min(unit)..max(unit) --quiet
               cntry, prov, ARIMA_P, ARIMA_D, ARIMA_Q)
 
             string filename = sprintf(\
-              "./figures/forecast_arima_%d%d%d_infodate_%s_maxhorizon_%d_%s_%s.png",\
-              ARIMA_P, ARIMA_D, ARIMA_Q, date_of_information, \
-              MAX_HORIZON, cntry, prov)
+              "./figures/forecast_arima_%d%d%d_maxhorizon_%d_%s_%s.png",\
+              ARIMA_P, ARIMA_D, ARIMA_Q, MAX_HORIZON, cntry, prov)
+            stored_filename += filename
 
             plot_arima_forecast(confirmed_cases, fc_point, fc_se, title, filename)
         endif
 
     endif
 endloop
+
+function void compile_markdown_plot_cmd (const strings stored_filename)
+    /* */
+    
+    scalar nsteps = ceil(nelem(stored_filename)/2)
+    scalar counter = 1
+    string markdown_cmd = ""
+    loop i=1..nsteps -q
+        string pic1 = stored_filename[counter]
+        if i < nsteps
+            string pic2 = stored_filename[counter + 1]
+            markdown_cmd += sprintf("<img src=\"%s\" width=\"425\"/> <img src=\"%s\" width=\"425\"/>\n", pic1, pic2)
+            counter = counter + 2
+        else
+            markdown_cmd += sprintf("<img src=\"%s\" width=\"425\"/>\n", pic1)
+        endif
+    endloop
+    print markdown_cmd
+end function    
+      
+compile_markdown_plot_cmd(stored_filename)
+
 
 
 

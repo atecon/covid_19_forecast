@@ -1,3 +1,24 @@
+function void compile_markdown_plot_cmd (const strings stored_filename)
+    /* Compile the markdown command for showing ex-ante forecasting plots. 
+    The resulting string must be added to the README.md file. */
+    
+    scalar nsteps = ceil(nelem(stored_filename)/2)
+    scalar counter = 1
+    string markdown_cmd = ""
+    loop i=1..nsteps -q
+        string pic1 = stored_filename[counter]
+        if i < nsteps
+            string pic2 = stored_filename[counter + 1]
+            markdown_cmd += sprintf("<img src=\"%s\" width=\"425\"/> <img src=\"%s\" width=\"425\"/>\n", pic1, pic2)
+            counter = counter + 2
+        else
+            markdown_cmd += sprintf("<img src=\"%s\" width=\"425\"/>\n", pic1)
+        endif
+    endloop
+    print markdown_cmd
+end function    
+
+
 function list add_future_observations (const list data_set,
                                        const int MAX_HORIZON)
     /*Add future observations of out-of-sample forecasting. */

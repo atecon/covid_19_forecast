@@ -27,7 +27,7 @@ The chosen forecasting method is of the ARIMA(p,d,q)-type. The default is an ARI
 
 # Up-to-date out-of-sample 7-days ahead forecasts
 
-\n\n<img src="./figures/forecast_arima_211_maxhorizon_7_mainland_china_anhui.png" width="425"/> <img src="./figures/forecast_arima_211_maxhorizon_7_mainland_china_beijing.png" width="425"/>
+<img src="./figures/forecast_arima_211_maxhorizon_7_mainland_china_anhui.png" width="425"/> <img src="./figures/forecast_arima_211_maxhorizon_7_mainland_china_beijing.png" width="425"/>
 <img src="./figures/forecast_arima_211_maxhorizon_7_mainland_china_chongqing.png" width="425"/> <img src="./figures/forecast_arima_211_maxhorizon_7_mainland_china_fujian.png" width="425"/>
 <img src="./figures/forecast_arima_211_maxhorizon_7_mainland_china_gansu.png" width="425"/> <img src="./figures/forecast_arima_211_maxhorizon_7_mainland_china_guangdong.png" width="425"/>
 <img src="./figures/forecast_arima_211_maxhorizon_7_mainland_china_guangxi.png" width="425"/> <img src="./figures/forecast_arima_211_maxhorizon_7_mainland_china_guizhou.png" width="425"/>

@@ -7,6 +7,7 @@ string DIR_WORK = "" 		# <SET_PATH_HERE> e.g. "/home/git_project"
 string DATA_URL = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv"
 string INITIAL_DATE = "2020-01-22"			# 1st available observation of CSSE dataset
 scalar MAX_HORIZON = 7						# multi-step OoS forecast horizon
+scalar COMPILE_MARKDOWN_CMD = 1				# compile markdown command for inserting forecasting plots to README.md
 
 # ARIMA model settings 
 scalar ARIMA_P = 2					# autoregressive (AR) order		
@@ -187,26 +188,10 @@ loop i=min(unit)..3 -q #max(unit) --quiet
     endif
 endloop
 
-function void compile_markdown_plot_cmd (const strings stored_filename)
-    /* */
-    
-    scalar nsteps = ceil(nelem(stored_filename)/2)
-    scalar counter = 1
-    string markdown_cmd = ""
-    loop i=1..nsteps -q
-        string pic1 = stored_filename[counter]
-        if i < nsteps
-            string pic2 = stored_filename[counter + 1]
-            markdown_cmd += sprintf("<img src=\"%s\" width=\"425\"/> <img src=\"%s\" width=\"425\"/>\n", pic1, pic2)
-            counter = counter + 2
-        else
-            markdown_cmd += sprintf("<img src=\"%s\" width=\"425\"/>\n", pic1)
-        endif
-    endloop
-    print markdown_cmd
-end function    
-      
-compile_markdown_plot_cmd(stored_filename)
+if COMPILE_MARKDOWN_CMD
+    compile_markdown_plot_cmd(stored_filename)
+endif
+
 
 
 

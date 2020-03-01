@@ -25,6 +25,8 @@ Next, for each country-province combination two exercises are conducted:
 
 The chosen forecasting method is of the ARIMA(p,d,q)-type. The default is an ARIMA(2,1,1) model but the user can set parameters of choice. For all forecasting exercises, 90% forecast intervals will be computed.
 
+**An automated job retrives latest data at 3am (CET), trains a new model, computes the forecasts and uploads the new forecasting plots.**
+
 # Up-to-date out-of-sample 7-days ahead forecasts
 
 <img src="./figures/forecast_arima_211_maxhorizon_7_mainland_china_anhui.png" width="425"/> <img src="./figures/forecast_arima_211_maxhorizon_7_mainland_china_beijing.png" width="425"/>

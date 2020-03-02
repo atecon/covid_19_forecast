@@ -101,7 +101,8 @@ function list arima_forecast (const series y,
                               const int p[0::],
                               const int d[0::],
                               const int q[0::],
-                              const int MAX_HORIZON[1::])
+                              const int MAX_HORIZON[1::],
+                              string *model_properties)
     /* Estimate arima type of model and forecast
     out-of-sample. */
 
@@ -113,9 +114,14 @@ function list arima_forecast (const series y,
 
     smpl ; -MAX_HORIZON
     catch arima p d q; y xlist --quiet
+    string model_properties = sprintf("ARIMA(%d,%d,%d)", p, d, q)
     if $error
         catch arima 1 1 0 ; y xlist --quiet
+        string model_properties = "ARIMA(1,1,0)"
         if $error
+            arima 0 1 0 ; y xlist --quiet
+            string model_properties = "ARIMA(0,1,0)"
+        else
             return L
         endif
     endif

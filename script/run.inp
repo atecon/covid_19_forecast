@@ -3,7 +3,7 @@ set verbose off
 
 # SETTINGS
 #==========
-string DIR_WORK = "" 		# <SET_PATH_HERE> e.g. "/home/git_project"
+string DIR_WORK = "/home/ninja/repo/covid_19_forecast" 		# <SET_PATH_HERE> e.g. "/home/git_project"
 string DATA_URL = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv"
 string INITIAL_DATE = "2020-01-22"			# 1st available observation of CSSE dataset
 scalar MAX_HORIZON = 7						# multi-step OoS forecast horizon
@@ -103,8 +103,9 @@ if RUN_EXPOST_ANALYSIS
               No ARIMA model will be fitted.\n", cntry, prov
         else
             # Expost analysis + plot multistep  interval forecasts
+            string model_properties = ""
             list FC = arima_forecast(confirmed_cases, , \
-              ARIMA_P, ARIMA_D, ARIMA_Q, MAX_HORIZON)
+              ARIMA_P, ARIMA_D, ARIMA_Q, MAX_HORIZON, &model_properties)
 
             if nelem(FC) == 0
                 printf "\nWarning: Target series includes only zeros for %s %s.\n\
@@ -115,11 +116,10 @@ if RUN_EXPOST_ANALYSIS
                 string label = sprintf("Conditional on %s", date_of_information)
                 setinfo fc_point --graph-name="@label"
 
-                string title = sprintf("%s-%s [ARIMA(%d,%d,%d), 90\% forecast interval]", \
-                  cntry, prov, ARIMA_P, ARIMA_D, ARIMA_Q)
+                string title = sprintf("%s - %s [%s, 90\% forecast interval]", \
+                  cntry, prov, model_properties)
                 string filename = sprintf(\
-                  "./figures/forecast_arima_%d%d%d_maxhorizon_%d_%s_%s_expost.png",\
-                  ARIMA_P, ARIMA_D, ARIMA_Q, MAX_HORIZON, cntry, prov)
+                  "./figures/forecast_arima_maxhorizon_%d_%s_%s.png", MAX_HORIZON, cntry, prov)
 
                 plot_arima_forecast(confirmed_cases, fc_point, fc_se, title, filename)
             endif
@@ -128,6 +128,7 @@ if RUN_EXPOST_ANALYSIS
     endloop
     smpl full
 endif
+
 
 # Out-of-sample for the forthcoming days for each country-province combination
 #=============================================================================
@@ -140,6 +141,8 @@ loop i=min(unit)..max(unit) --quiet
     setobs unit time --panel-vars
     smpl unit == $i --restrict
     setobs 7 @INITIAL_DATE --time-series
+
+    list FC = null
 
     string cntry = strvals(country)[values(country)]
     if sum(ok(province))	# for some countries data on province level not available
@@ -155,8 +158,9 @@ loop i=min(unit)..max(unit) --quiet
           No ARIMA model will be fitted.\n", cntry, prov
     else
         # Out-of-sample analysis + plot multistep  interval forecasts
+        string model_properties = ""
         list FC = arima_forecast(confirmed_cases, , \
-          ARIMA_P, ARIMA_D, ARIMA_Q, MAX_HORIZON)
+          ARIMA_P, ARIMA_D, ARIMA_Q, MAX_HORIZON, &model_properties)
 
         if nelem(FC) == 0
             printf "\nWarning: Target series includes only zeros for %s %s.\n\
@@ -167,12 +171,10 @@ loop i=min(unit)..max(unit) --quiet
             string label = sprintf("Conditional on %s", date_of_information)
             setinfo fc_point --graph-name="@label"
 
-            string title = sprintf("%s - %s [ARIMA(%d,%d,%d), 90\% forecast interval]", \
-              cntry, prov, ARIMA_P, ARIMA_D, ARIMA_Q)
-
+            string title = sprintf("%s - %s [%s, 90\% forecast interval]", \
+              cntry, prov, model_properties)
             string filename = sprintf(\
-              "./figures/forecast_arima_%d%d%d_maxhorizon_%d_%s_%s.png",\
-              ARIMA_P, ARIMA_D, ARIMA_Q, MAX_HORIZON, cntry, prov)
+              "./figures/forecast_arima_maxhorizon_%d_%s_%s.png", MAX_HORIZON, cntry, prov)
             stored_filename += filename
 
             plot_arima_forecast(confirmed_cases, fc_point, fc_se, title, filename)

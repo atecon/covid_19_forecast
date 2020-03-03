@@ -65,7 +65,7 @@ The chosen forecasting method is of the ARIMA(p,d,q)-type. The default is an ARI
 
 <img src="./figures/forecast_arima_maxhorizon_7_taiwan_taiwan.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_us_king_county_wa.png" width="425"/>
 
-<img src="./figures/forecast_arima_maxhorizon_7_us_chicago_il.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_us_tempe_az.png" width="425"/>
+<img src="./figures/forecast_arima_maxhorizon_7_us_cook_county_il.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_us_tempe_az.png" width="425"/>
 
 <img src="./figures/forecast_arima_maxhorizon_7_macau_macau.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_hong_kong_hong_kong.png" width="425"/>
 
@@ -145,10 +145,28 @@ The chosen forecasting method is of the ARIMA(p,d,q)-type. The default is an ARI
 
 <img src="./figures/forecast_arima_maxhorizon_7_luxembourg_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_monaco_.png" width="425"/>
 
-<img src="./figures/forecast_arima_maxhorizon_7_us_portland_or.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_us_snohomish_county_wa.png" width="425"/>
+<img src="./figures/forecast_arima_maxhorizon_7_qatar_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_us_snohomish_county_wa.png" width="425"/>
 
 <img src="./figures/forecast_arima_maxhorizon_7_ecuador_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_azerbaijan_.png" width="425"/>
 
 <img src="./figures/forecast_arima_maxhorizon_7_czech_republic_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_armenia_.png" width="425"/>
 
-<img src="./figures/forecast_arima_maxhorizon_7_dominican_republic_.png" width="425"/>
+<img src="./figures/forecast_arima_maxhorizon_7_dominican_republic_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_us_providence_ri.png" width="425"/>
+
+<img src="./figures/forecast_arima_maxhorizon_7_us_cook_county_il.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_indonesia_.png" width="425"/>
+
+<img src="./figures/forecast_arima_maxhorizon_7_portugal_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_andorra_.png" width="425"/>
+
+<img src="./figures/forecast_arima_maxhorizon_7_australia_tasmania.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_latvia_.png" width="425"/>
+
+<img src="./figures/forecast_arima_maxhorizon_7_morocco_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_saudi_arabia_.png" width="425"/>
+
+<img src="./figures/forecast_arima_maxhorizon_7_senegal_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_us_grafton_county_nh.png" width="425"/>
+
+<img src="./figures/forecast_arima_maxhorizon_7_us_hillsborough_fl.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_us_new_york_city_ny.png" width="425"/>
+
+<img src="./figures/forecast_arima_maxhorizon_7_us_placer_county_ca.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_us_san_mateo_ca.png" width="425"/>
+
+<img src="./figures/forecast_arima_maxhorizon_7_us_sarasota_fl.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_us_sonoma_county_ca.png" width="425"/>
+
+<img src="./figures/forecast_arima_maxhorizon_7_us_umatilla_or.png" width="425"/>

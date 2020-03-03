@@ -29,7 +29,6 @@ The chosen forecasting method is of the ARIMA(p,d,q)-type. The default is an ARI
 
 # Up-to-date out-of-sample 7-days ahead forecasts
 
-<img src="./figures/forecast_arima_maxhorizon_7_mainland_china_anhui.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_mainland_china_beijing.png" width="425"/>
 
 <img src="./figures/forecast_arima_maxhorizon_7_mainland_china_chongqing.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_mainland_china_fujian.png" width="425"/>
 
@@ -151,9 +150,7 @@ The chosen forecasting method is of the ARIMA(p,d,q)-type. The default is an ARI
 
 <img src="./figures/forecast_arima_maxhorizon_7_czech_republic_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_armenia_.png" width="425"/>
 
-<img src="./figures/forecast_arima_maxhorizon_7_dominican_republic_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_us_providence_ri.png" width="425"/>
-
-<img src="./figures/forecast_arima_maxhorizon_7_us_cook_county_il.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_indonesia_.png" width="425"/>
+<img src="./figures/forecast_arima_maxhorizon_7_us_providence_ri.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_indonesia_.png" width="425"/>
 
 <img src="./figures/forecast_arima_maxhorizon_7_portugal_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_andorra_.png" width="425"/>
 
@@ -163,10 +160,9 @@ The chosen forecasting method is of the ARIMA(p,d,q)-type. The default is an ARI
 
 <img src="./figures/forecast_arima_maxhorizon_7_senegal_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_us_grafton_county_nh.png" width="425"/>
 
-<img src="./figures/forecast_arima_maxhorizon_7_us_hillsborough_fl.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_us_new_york_city_ny.png" width="425"/>
-
-<img src="./figures/forecast_arima_maxhorizon_7_us_placer_county_ca.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_us_san_mateo_ca.png" width="425"/>
+<img src="./figures/forecast_arima_maxhorizon_7_us_hillsborough_fl.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_us_san_mateo_ca.png" width="425"/>
 
 <img src="./figures/forecast_arima_maxhorizon_7_us_sarasota_fl.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_us_sonoma_county_ca.png" width="425"/>
 
 <img src="./figures/forecast_arima_maxhorizon_7_us_umatilla_or.png" width="425"/>
+

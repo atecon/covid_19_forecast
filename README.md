@@ -29,6 +29,7 @@ The chosen forecasting method is of the ARIMA(p,d,q)-type. The default is an ARI
 
 # Up-to-date out-of-sample 7-days ahead forecasts
 
+<img src="./figures/forecast_arima_maxhorizon_7_mainland_china_anhui.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_mainland_china_beijing.png" width="425"/>
 
 <img src="./figures/forecast_arima_maxhorizon_7_mainland_china_chongqing.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_mainland_china_fujian.png" width="425"/>
 
@@ -76,93 +77,102 @@ The chosen forecasting method is of the ARIMA(p,d,q)-type. The default is an ARI
 
 <img src="./figures/forecast_arima_maxhorizon_7_canada_british_columbia.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_us_orange_ca.png" width="425"/>
 
-<img src="./figures/forecast_arima_maxhorizon_7_us_los_angeles_ca.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_australia_new_south_wales.png" width="425"/>
+<img src="./figures/forecast_arima_maxhorizon_7_us_los_angeles_ca.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_australia_victoria.png" width="425"/>
 
-<img src="./figures/forecast_arima_maxhorizon_7_australia_victoria.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_australia_queensland.png" width="425"/>
+<img src="./figures/forecast_arima_maxhorizon_7_australia_queensland.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_cambodia_.png" width="425"/>
 
-<img src="./figures/forecast_arima_maxhorizon_7_cambodia_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_sri_lanka_.png" width="425"/>
+<img src="./figures/forecast_arima_maxhorizon_7_sri_lanka_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_germany_.png" width="425"/>
 
-<img src="./figures/forecast_arima_maxhorizon_7_germany_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_finland_.png" width="425"/>
+<img src="./figures/forecast_arima_maxhorizon_7_finland_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_united_arab_emirates_.png" width="425"/>
 
-<img src="./figures/forecast_arima_maxhorizon_7_united_arab_emirates_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_philippines_.png" width="425"/>
+<img src="./figures/forecast_arima_maxhorizon_7_philippines_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_india_.png" width="425"/>
 
-<img src="./figures/forecast_arima_maxhorizon_7_india_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_canada_london_on.png" width="425"/>
+<img src="./figures/forecast_arima_maxhorizon_7_canada_london_on.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_italy_.png" width="425"/>
 
-<img src="./figures/forecast_arima_maxhorizon_7_italy_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_uk_.png" width="425"/>
+<img src="./figures/forecast_arima_maxhorizon_7_uk_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_russia_.png" width="425"/>
 
-<img src="./figures/forecast_arima_maxhorizon_7_russia_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_sweden_.png" width="425"/>
+<img src="./figures/forecast_arima_maxhorizon_7_sweden_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_us_santa_clara_ca.png" width="425"/>
 
-<img src="./figures/forecast_arima_maxhorizon_7_us_santa_clara_ca.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_spain_.png" width="425"/>
+<img src="./figures/forecast_arima_maxhorizon_7_spain_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_australia_south_australia.png" width="425"/>
 
-<img src="./figures/forecast_arima_maxhorizon_7_australia_south_australia.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_us_boston_ma.png" width="425"/>
+<img src="./figures/forecast_arima_maxhorizon_7_us_boston_ma.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_us_san_benito_ca.png" width="425"/>
 
-<img src="./figures/forecast_arima_maxhorizon_7_us_san_benito_ca.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_belgium_.png" width="425"/>
+<img src="./figures/forecast_arima_maxhorizon_7_belgium_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_us_madison_wi.png" width="425"/>
 
-<img src="./figures/forecast_arima_maxhorizon_7_us_madison_wi.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_others_diamond_princess_cruise_ship.png" width="425"/>
+<img src="./figures/forecast_arima_maxhorizon_7_others_diamond_princess_cruise_ship.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_us_san_diego_county_ca.png" width="425"/>
 
-<img src="./figures/forecast_arima_maxhorizon_7_us_san_diego_county_ca.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_us_san_antonio_tx.png" width="425"/>
+<img src="./figures/forecast_arima_maxhorizon_7_us_san_antonio_tx.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_egypt_.png" width="425"/>
 
-<img src="./figures/forecast_arima_maxhorizon_7_egypt_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_iran_.png" width="425"/>
+<img src="./figures/forecast_arima_maxhorizon_7_iran_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_us_omaha_ne_(from_diamond_princess).png" width="425"/>
 
-<img src="./figures/forecast_arima_maxhorizon_7_us_omaha_ne_(from_diamond_princess).png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_us_travis_ca_(from_diamond_princess).png" width="425"/>
+<img src="./figures/forecast_arima_maxhorizon_7_us_travis_ca_(from_diamond_princess).png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_australia_from_diamond_princess.png" width="425"/>
 
-<img src="./figures/forecast_arima_maxhorizon_7_australia_from_diamond_princess.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_us_lackland_tx_(from_diamond_princess).png" width="425"/>
+<img src="./figures/forecast_arima_maxhorizon_7_us_lackland_tx_(from_diamond_princess).png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_lebanon_.png" width="425"/>
 
-<img src="./figures/forecast_arima_maxhorizon_7_lebanon_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_us_humboldt_county_ca.png" width="425"/>
+<img src="./figures/forecast_arima_maxhorizon_7_us_humboldt_county_ca.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_us_sacramento_county_ca.png" width="425"/>
 
-<img src="./figures/forecast_arima_maxhorizon_7_us_sacramento_county_ca.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_iraq_.png" width="425"/>
+<img src="./figures/forecast_arima_maxhorizon_7_iraq_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_us_unassigned_location_(from_diamond_princess).png" width="425"/>
 
-<img src="./figures/forecast_arima_maxhorizon_7_us_unassigned_location_(from_diamond_princess).png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_oman_.png" width="425"/>
+<img src="./figures/forecast_arima_maxhorizon_7_oman_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_afghanistan_.png" width="425"/>
 
-<img src="./figures/forecast_arima_maxhorizon_7_afghanistan_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_bahrain_.png" width="425"/>
+<img src="./figures/forecast_arima_maxhorizon_7_bahrain_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_kuwait_.png" width="425"/>
 
-<img src="./figures/forecast_arima_maxhorizon_7_kuwait_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_algeria_.png" width="425"/>
+<img src="./figures/forecast_arima_maxhorizon_7_algeria_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_croatia_.png" width="425"/>
 
-<img src="./figures/forecast_arima_maxhorizon_7_croatia_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_switzerland_.png" width="425"/>
+<img src="./figures/forecast_arima_maxhorizon_7_switzerland_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_austria_.png" width="425"/>
 
-<img src="./figures/forecast_arima_maxhorizon_7_austria_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_israel_.png" width="425"/>
+<img src="./figures/forecast_arima_maxhorizon_7_israel_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_pakistan_.png" width="425"/>
 
-<img src="./figures/forecast_arima_maxhorizon_7_pakistan_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_brazil_.png" width="425"/>
+<img src="./figures/forecast_arima_maxhorizon_7_brazil_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_georgia_.png" width="425"/>
 
-<img src="./figures/forecast_arima_maxhorizon_7_georgia_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_greece_.png" width="425"/>
+<img src="./figures/forecast_arima_maxhorizon_7_greece_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_north_macedonia_.png" width="425"/>
 
-<img src="./figures/forecast_arima_maxhorizon_7_north_macedonia_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_norway_.png" width="425"/>
+<img src="./figures/forecast_arima_maxhorizon_7_norway_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_romania_.png" width="425"/>
 
-<img src="./figures/forecast_arima_maxhorizon_7_romania_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_denmark_.png" width="425"/>
+<img src="./figures/forecast_arima_maxhorizon_7_denmark_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_estonia_.png" width="425"/>
 
-<img src="./figures/forecast_arima_maxhorizon_7_estonia_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_netherlands_.png" width="425"/>
+<img src="./figures/forecast_arima_maxhorizon_7_netherlands_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_san_marino_.png" width="425"/>
 
-<img src="./figures/forecast_arima_maxhorizon_7_san_marino_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_belarus_.png" width="425"/>
+<img src="./figures/forecast_arima_maxhorizon_7_belarus_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_canada_montreal_qc.png" width="425"/>
 
-<img src="./figures/forecast_arima_maxhorizon_7_canada_montreal_qc.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_iceland_.png" width="425"/>
+<img src="./figures/forecast_arima_maxhorizon_7_iceland_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_lithuania_.png" width="425"/>
 
-<img src="./figures/forecast_arima_maxhorizon_7_lithuania_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_mexico_.png" width="425"/>
+<img src="./figures/forecast_arima_maxhorizon_7_mexico_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_new_zealand_.png" width="425"/>
 
-<img src="./figures/forecast_arima_maxhorizon_7_new_zealand_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_nigeria_.png" width="425"/>
+<img src="./figures/forecast_arima_maxhorizon_7_nigeria_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_australia_western_australia.png" width="425"/>
 
-<img src="./figures/forecast_arima_maxhorizon_7_australia_western_australia.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_ireland_.png" width="425"/>
+<img src="./figures/forecast_arima_maxhorizon_7_ireland_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_luxembourg_.png" width="425"/>
 
-<img src="./figures/forecast_arima_maxhorizon_7_luxembourg_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_monaco_.png" width="425"/>
+<img src="./figures/forecast_arima_maxhorizon_7_monaco_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_qatar_.png" width="425"/>
 
-<img src="./figures/forecast_arima_maxhorizon_7_qatar_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_us_snohomish_county_wa.png" width="425"/>
+<img src="./figures/forecast_arima_maxhorizon_7_us_snohomish_county_wa.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_ecuador_.png" width="425"/>
 
-<img src="./figures/forecast_arima_maxhorizon_7_ecuador_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_azerbaijan_.png" width="425"/>
+<img src="./figures/forecast_arima_maxhorizon_7_azerbaijan_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_czech_republic_.png" width="425"/>
 
-<img src="./figures/forecast_arima_maxhorizon_7_czech_republic_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_armenia_.png" width="425"/>
+<img src="./figures/forecast_arima_maxhorizon_7_armenia_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_dominican_republic_.png" width="425"/>
 
-<img src="./figures/forecast_arima_maxhorizon_7_us_providence_ri.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_indonesia_.png" width="425"/>
+<img src="./figures/forecast_arima_maxhorizon_7_indonesia_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_portugal_.png" width="425"/>
 
-<img src="./figures/forecast_arima_maxhorizon_7_portugal_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_andorra_.png" width="425"/>
+<img src="./figures/forecast_arima_maxhorizon_7_andorra_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_australia_tasmania.png" width="425"/>
 
-<img src="./figures/forecast_arima_maxhorizon_7_australia_tasmania.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_latvia_.png" width="425"/>
+<img src="./figures/forecast_arima_maxhorizon_7_latvia_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_morocco_.png" width="425"/>
 
-<img src="./figures/forecast_arima_maxhorizon_7_morocco_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_saudi_arabia_.png" width="425"/>
+<img src="./figures/forecast_arima_maxhorizon_7_saudi_arabia_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_senegal_.png" width="425"/>
 
-<img src="./figures/forecast_arima_maxhorizon_7_senegal_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_us_grafton_county_nh.png" width="425"/>
+<img src="./figures/forecast_arima_maxhorizon_7_us_grafton_county_nh.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_us_hillsborough_fl.png" width="425"/>
 
-<img src="./figures/forecast_arima_maxhorizon_7_us_hillsborough_fl.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_us_san_mateo_ca.png" width="425"/>
+<img src="./figures/forecast_arima_maxhorizon_7_us_new_york_city_ny.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_us_placer_county_ca.png" width="425"/>
 
-<img src="./figures/forecast_arima_maxhorizon_7_us_sarasota_fl.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_us_sonoma_county_ca.png" width="425"/>
+<img src="./figures/forecast_arima_maxhorizon_7_us_san_mateo_ca.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_us_sarasota_fl.png" width="425"/>
 
-<img src="./figures/forecast_arima_maxhorizon_7_us_umatilla_or.png" width="425"/>
+<img src="./figures/forecast_arima_maxhorizon_7_us_sonoma_county_ca.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_us_umatilla_or.png" width="425"/>
 
+<img src="./figures/forecast_arima_maxhorizon_7_us_fulton_county_ga.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_argentina_.png" width="425"/>
+
+<img src="./figures/forecast_arima_maxhorizon_7_chile_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_jordan_.png" width="425"/>
+
+<img src="./figures/forecast_arima_maxhorizon_7_us_norfolk_county_ma.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_us_berkeley_ca.png" width="425"/>
+
+<img src="./figures/forecast_arima_maxhorizon_7_us_maricopa_county_az.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_us_wake_county_nc.png" width="425"/>
+
+<img src="./figures/forecast_arima_maxhorizon_7_us_westchester_county_ny.png" width="425"/>

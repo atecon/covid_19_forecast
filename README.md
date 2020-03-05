@@ -106,9 +106,9 @@ Next, for each country-province combination two exercises are conducted:
 
 <img src="./figures/forecast_arima_maxhorizon_7_malaysia_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_canada_toronto_on.png" width="425"/>
 
-<img src="./figures/forecast_arima_maxhorizon_7_canada_british_columbia.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_us_orange_ca.png" width="425"/>
+<img src="./figures/forecast_arima_maxhorizon_7_canada_british_columbia.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_us_los_angeles_ca.png" width="425"/>
 
-<img src="./figures/forecast_arima_maxhorizon_7_us_los_angeles_ca.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_australia_victoria.png" width="425"/>
+<img src="./figures/forecast_arima_maxhorizon_7_australia_new_south_wales.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_australia_victoria.png" width="425"/>
 
 <img src="./figures/forecast_arima_maxhorizon_7_australia_queensland.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_cambodia_.png" width="425"/>
 
@@ -182,23 +182,21 @@ Next, for each country-province combination two exercises are conducted:
 
 <img src="./figures/forecast_arima_maxhorizon_7_armenia_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_dominican_republic_.png" width="425"/>
 
-<img src="./figures/forecast_arima_maxhorizon_7_indonesia_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_portugal_.png" width="425"/>
+<img src="./figures/forecast_arima_maxhorizon_7_us_providence_ri.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_indonesia_.png" width="425"/>
 
-<img src="./figures/forecast_arima_maxhorizon_7_andorra_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_australia_tasmania.png" width="425"/>
+<img src="./figures/forecast_arima_maxhorizon_7_portugal_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_andorra_.png" width="425"/>
 
-<img src="./figures/forecast_arima_maxhorizon_7_latvia_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_morocco_.png" width="425"/>
+<img src="./figures/forecast_arima_maxhorizon_7_australia_tasmania.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_latvia_.png" width="425"/>
 
-<img src="./figures/forecast_arima_maxhorizon_7_saudi_arabia_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_senegal_.png" width="425"/>
+<img src="./figures/forecast_arima_maxhorizon_7_morocco_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_saudi_arabia_.png" width="425"/>
 
-<img src="./figures/forecast_arima_maxhorizon_7_us_grafton_county_nh.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_us_hillsborough_fl.png" width="425"/>
+<img src="./figures/forecast_arima_maxhorizon_7_senegal_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_us_new_york_city_ny.png" width="425"/>
 
-<img src="./figures/forecast_arima_maxhorizon_7_us_new_york_city_ny.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_us_placer_county_ca.png" width="425"/>
+<img src="./figures/forecast_arima_maxhorizon_7_us_sarasota_fl.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_us_sonoma_county_ca.png" width="425"/>
 
-<img src="./figures/forecast_arima_maxhorizon_7_us_san_mateo_ca.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_us_sarasota_fl.png" width="425"/>
+<img src="./figures/forecast_arima_maxhorizon_7_us_umatilla_or.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_us_fulton_county_ga.png" width="425"/>
 
-<img src="./figures/forecast_arima_maxhorizon_7_us_sonoma_county_ca.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_us_umatilla_or.png" width="425"/>
-
-<img src="./figures/forecast_arima_maxhorizon_7_us_fulton_county_ga.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_argentina_.png" width="425"/>
+<img src="./figures/forecast_arima_maxhorizon_7_us_washington_county_or.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_argentina_.png" width="425"/>
 
 <img src="./figures/forecast_arima_maxhorizon_7_chile_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_jordan_.png" width="425"/>
 
@@ -206,4 +204,14 @@ Next, for each country-province combination two exercises are conducted:
 
 <img src="./figures/forecast_arima_maxhorizon_7_us_maricopa_county_az.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_us_wake_county_nc.png" width="425"/>
 
-<img src="./figures/forecast_arima_maxhorizon_7_us_westchester_county_ny.png" width="425"/>
+<img src="./figures/forecast_arima_maxhorizon_7_ukraine_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_saint_barthelemy_.png" width="425"/>
+
+<img src="./figures/forecast_arima_maxhorizon_7_us_orange_county_ca.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_hungary_.png" width="425"/>
+
+<img src="./figures/forecast_arima_maxhorizon_7_australia_northern_territory.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_faroe_islands_.png" width="425"/>
+
+<img src="./figures/forecast_arima_maxhorizon_7_gibraltar_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_liechtenstein_.png" width="425"/>
+
+<img src="./figures/forecast_arima_maxhorizon_7_poland_.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_tunisia_.png" width="425"/>
+
+<img src="./figures/forecast_arima_maxhorizon_7_us_contra_costa_county_ca.png" width="425"/>

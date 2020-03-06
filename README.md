@@ -58,7 +58,12 @@ Next, for each country-province combination two exercises are conducted:
 	1) If the parameter ```RUN_EXPOST_ANALYSIS``` is set to '1' , an **ex-post** forecasting analysis is done. For this,  the training-set is set to <CURRENT_DATE - MAX_HORIZON> observations where "CURRENT_DATE" refers to latest date for which data is available, and ```MAX_HORIZON``` is the set multi-step forecast horizon (default 7 days).
 	2) Out-of-sample interval forecasts for the forthcoming ```MAX_HORIZON``` days are computed.
 
-# Up-to-date out-of-sample 7-days ahead forecasts
+# Ex-Post and up-to-date out-of-sample 7-days ahead forecasts
+The left panel shows forecast made in information available 7 days ago and the realization of 'confirmed cases' during this period. This may give you an idea of how 'well' the forecasted dynamics were. 
+
+The right panel shows forecasts made on latest data for the forthcoming 7 days.
+
+
 <img src="./figures/forecast_arima_maxhorizon_7_mainland_china_anhui_expost.png" width="425"/> <img src="./figures/forecast_arima_maxhorizon_7_mainland_china_anhui.png" width="425"/>
 <em>mainland_china - anhui</em>
 

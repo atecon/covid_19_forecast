@@ -3,12 +3,13 @@ set verbose off
 
 # SETTINGS
 #==========
-string DIR_WORK = "" 		# <SET_PATH_HERE> e.g. "/home/git_project"
+string DIR_WORK = "/home/at/git/covid_19_forecast" 		# <SET_PATH_HERE> e.g. "/home/git_project"
 string DATA_URL = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv"
 string INITIAL_DATE = "2020-01-22"			# 1st available observation of CSSE dataset
 scalar MAX_HORIZON = 7						# multi-step OoS forecast horizon
-scalar RUN_EXPOST_ANALYSIS = 0				# run expost forecasting exercise, by going 'MAX_HORIZON' back in time
+string SAVE_PLOT_AS = "png"					# grpahic format: "png", "pdf"", eps"
 scalar COMPILE_MARKDOWN_CMD = 1				# compile markdown command for inserting forecasting plots to README.md
+
 
 # ARIMA model settings
 scalar ARIMA_P = 2					# autoregressive (AR) order
@@ -65,74 +66,78 @@ print_panel_details()
 
 # ANALYSIS
 #=========
+strings countries_ok = defarray()
+strings provinces_ok = defarray()
+
 series log_confirmed_cases = log(confirmed_cases)
 
+string filename = sprintf("./figures/boxplot_log_confirmed_cases_by_time.%s", SAVE_PLOT_AS)
 boxplot log_confirmed_cases time --factorized \
-  --output="./figures/boxplot_log_confirmed_cases_by_time.png"
+  --output="@filename"
+string filename = sprintf("./figures/boxplot_log_confirmed_cases_by_unit.%s", SAVE_PLOT_AS)
 boxplot log_confirmed_cases unit --factorized \
-  --output="./figures/boxplot_log_confirmed_cases_by_unit.png"
+  --output="@filename"
 
 #panplot log_confirmed_cases --overlay --output=display
 
 #gnuplot cases_confirmed non_zero_regions \
 #  --time-series --with-lines --output=display
 
-if RUN_EXPOST_ANALYSIS
-    # Expost: Compute ARIMA based forecasts for each country-province combination
-    #============================================================================
+
+# Expost: Compute ARIMA based forecasts for each country-province combination
+#============================================================================
+smpl full
+loop i=min(unit)..max(unit) --quiet
+
+    # define time-series set for each country-province
     smpl full
-    loop i=min(unit)..max(unit) --quiet
+    setobs unit time --panel-vars
+    smpl unit == $i && ok(confirmed_cases) --restrict
+    setobs 7 @INITIAL_DATE --time-series
 
-        # define time-series set for each country-province
-        smpl full
-        setobs unit time --panel-vars
-        smpl unit == $i && ok(confirmed_cases) --restrict
-        setobs 7 @INITIAL_DATE --time-series
+    string country_name = strvals(country)[values(country)]
+    if sum(ok(province))	# for some countries data on province level not available
+        string province_name = strvals(province)[values(province)]
+    else
+        string province_name = ""
+    endif
+    printf "Start forecasting for:\n\
+      country '%s' and province '%s'\n", country_name, province_name
 
-        string cntry = strvals(country)[values(country)]
-        if sum(ok(province))	# for some countries data on province level not available
-            string prov = strvals(province)[values(province)]
+    if isconst(confirmed_cases)
+        printf "\nWarning: Target series is a constant for %s %s.\n\
+          No ARIMA model will be fitted.\n", country_name, province_name
+    else
+        # Expost analysis + plot multistep interval forecasts
+        string model_properties = ""
+        list FC = arima_forecast(confirmed_cases, , \
+          ARIMA_P, ARIMA_D, ARIMA_Q, MAX_HORIZON, &model_properties)
+
+        if nelem(FC) == 0
+            printf "\nWarning: Target series includes only zeros for %s %s.\n\
+              No ARIMA model will be fitted.\n", country_name, province_name
         else
-            string prov = ""
+            setobs 7 @INITIAL_DATE --time-series
+            string date_of_information = obslabel($t2 - MAX_HORIZON)
+            string label = sprintf("Conditional on %s", date_of_information)
+            setinfo fc_point --graph-name="@label"
+
+            string title = sprintf("%s - %s [%s, 90\% forecast interval]", \
+              country_name, province_name, model_properties)
+
+            string filename = sprintf("./figures/%s.%s", \
+              filename_forecast_plot(country_name, province_name, MAX_HORIZON, 1), SAVE_PLOT_AS)
+
+            plot_arima_forecast(confirmed_cases, fc_point, fc_se, title, filename)
         endif
-        printf "Start forecasting for:\n\
-          country '%s' and province '%s'\n", cntry, prov
 
-        if isconst(confirmed_cases)
-            printf "\nWarning: Target series is a constant for %s %s.\n\
-              No ARIMA model will be fitted.\n", cntry, prov
-        else
-            # Expost analysis + plot multistep  interval forecasts
-            string model_properties = ""
-            list FC = arima_forecast(confirmed_cases, , \
-              ARIMA_P, ARIMA_D, ARIMA_Q, MAX_HORIZON, &model_properties)
-
-            if nelem(FC) == 0
-                printf "\nWarning: Target series includes only zeros for %s %s.\n\
-                  No ARIMA model will be fitted.\n", cntry, prov
-            else
-                setobs 7 @INITIAL_DATE --time-series
-                string date_of_information = obslabel($t2 - MAX_HORIZON)
-                string label = sprintf("Conditional on %s", date_of_information)
-                setinfo fc_point --graph-name="@label"
-
-                string title = sprintf("%s - %s [%s, 90\% forecast interval]", \
-                  cntry, prov, model_properties)
-                string filename = sprintf(\
-                  "./figures/forecast_arima_maxhorizon_%d_%s_%s.png", MAX_HORIZON, cntry, prov)
-
-                plot_arima_forecast(confirmed_cases, fc_point, fc_se, title, filename)
-            endif
-
-        endif
-    endloop
-    smpl full
-endif
+    endif
+endloop
+smpl full
 
 
 # Out-of-sample for the forthcoming days for each country-province combination
 #=============================================================================
-strings stored_filename = defarray()			# needed for compiling markdown command for plotting figures on github
 smpl full
 loop i=min(unit)..max(unit) --quiet
 
@@ -144,18 +149,18 @@ loop i=min(unit)..max(unit) --quiet
 
     list FC = null
 
-    string cntry = strvals(country)[values(country)]
+    string country_name = strvals(country)[values(country)]
     if sum(ok(province))	# for some countries data on province level not available
-        string prov = strvals(province)[values(province)]
+        string province_name = strvals(province)[values(province)]
     else
-        string prov = ""
+        string province_name = ""
     endif
     printf "Start forecasting for:\n\
-      country '%s' and province '%s'\n", cntry, prov
+      country '%s' and province '%s'\n", country_name, province_name
 
     if isconst(confirmed_cases)
         printf "\nWarning: Target series is a constant for %s %s.\n\
-          No ARIMA model will be fitted.\n", cntry, prov
+          No ARIMA model will be fitted.\n", country_name, province_name
     else
         # Out-of-sample analysis + plot multistep  interval forecasts
         string model_properties = ""
@@ -164,7 +169,7 @@ loop i=min(unit)..max(unit) --quiet
 
         if nelem(FC) == 0
             printf "\nWarning: Target series includes only zeros for %s %s.\n\
-              No ARIMA model will be fitted.\n", cntry, prov
+              No ARIMA model will be fitted.\n", country_name, province_name
         else
             setobs 7 @INITIAL_DATE --time-series
             string date_of_information = obslabel($t2 - MAX_HORIZON)
@@ -172,19 +177,23 @@ loop i=min(unit)..max(unit) --quiet
             setinfo fc_point --graph-name="@label"
 
             string title = sprintf("%s - %s [%s, 90\% forecast interval]", \
-              cntry, prov, model_properties)
-            string filename = sprintf(\
-              "./figures/forecast_arima_maxhorizon_%d_%s_%s.png", MAX_HORIZON, cntry, prov)
-            stored_filename += filename
+              country_name, province_name, model_properties)
+            string filename = sprintf("./figures/%s.%s", \
+              filename_forecast_plot(country_name, province_name, MAX_HORIZON, 0), SAVE_PLOT_AS)
 
             plot_arima_forecast(confirmed_cases, fc_point, fc_se, title, filename)
+            
+            countries_ok += sprintf("%s", country_name)
+            provinces_ok += sprintf("%s", province_name)
         endif
 
     endif
 endloop
 
-if COMPILE_MARKDOWN_CMD
-    compile_markdown_plot_cmd(stored_filename)
+
+if COMPILE_MARKDOWN_CMD # commands for showingh plots in README.md
+    string mdc = compile_markdown_plot_cmd(countries_ok, provinces_ok, MAX_HORIZON)
+    print mdc
 endif
 
 

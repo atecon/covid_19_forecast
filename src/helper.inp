@@ -1,22 +1,39 @@
-function void compile_markdown_plot_cmd (const strings stored_filename)
-    /* Compile the markdown command for showing ex-ante forecasting plots. 
-    The resulting string must be added to the README.md file. */
-    
-    scalar nsteps = ceil(nelem(stored_filename)/2)
-    scalar counter = 1
+function string filename_forecast_plot (const string country,
+                                        const string province,
+                                        const int MAX_HORIZON[1::],
+                                        const bool is_expost)
+    /* Compile filename of plot showing expost/ exante interval forecast. */
+
+    string expost = ""
+    expost = (is_expost > 0) ? "_expost" : expost
+
+    return sprintf("forecast_arima_maxhorizon_%d_%s_%s%s.png", \
+      MAX_HORIZON, country, province, expost)
+end function
+
+
+function string compile_markdown_plot_cmd (const strings countries,
+                                           const strings provinces,
+                                           const int MAX_HORIZON[1::])
+    /* Compile the markdown command for showing both exp-post and
+       ex-ante forecasting plots. The resulting string must be added
+    to the README.md file. */
+
+    if nelem(countries) != nelem(provinces)
+        funcerr "Arrays 'countries' and 'provinces' must be of same length."
+    endif
+
     string markdown_cmd = ""
-    loop i=1..nsteps -q
-        string pic1 = stored_filename[counter]
-        if i < nsteps
-            string pic2 = stored_filename[counter + 1]
-            markdown_cmd += sprintf("<img src=\"%s\" width=\"425\"/> <img src=\"%s\" width=\"425\"/>\n\n", pic1, pic2)
-            counter = counter + 2
-        else
-            markdown_cmd += sprintf("<img src=\"%s\" width=\"425\"/>\n", pic1)
-        endif
+
+    loop i=1..nelem(countries) -q
+        string pic1 = filename_forecast_plot(countries[i], provinces[i], MAX_HORIZON, 1)
+        string pic2 = filename_forecast_plot(countries[i], provinces[i], MAX_HORIZON, 0)
+        markdown_cmd += sprintf("<img src=\"%s\" width=\"425\"/> <img src=\"%s\" width=\"425\"/>\n", pic1, pic2)
+        markdown_cmd += sprintf("<em>%s - %s</em>\n\n", countries[i], provinces[i])
     endloop
-    print markdown_cmd
-end function    
+
+    return markdown_cmd
+end function
 
 
 function list add_future_observations (const list data_set,
@@ -107,6 +124,7 @@ function list arima_forecast (const series y,
     out-of-sample. */
 
     list L = null
+    scalar error = 0
     
     if !exists(xlist)
         list xlist = null
@@ -114,23 +132,27 @@ function list arima_forecast (const series y,
 
     smpl ; -MAX_HORIZON
     catch arima p d q; y xlist --quiet
+    error = $error
     string model_properties = sprintf("ARIMA(%d,%d,%d)", p, d, q)
-    if $error
+    if error
         catch arima 1 1 0 ; y xlist --quiet
+        error = $error
         string model_properties = "ARIMA(1,1,0)"
-        if $error
-            arima 0 1 0 ; y xlist --quiet
+        if error
+            catch arima 0 1 0 ; y xlist --quiet
+            error = $error
             string model_properties = "ARIMA(0,1,0)"
-        else
-            return L
         endif
+    endif
+    if error
+        return L
     endif
 
     # Plot multistep  interval forecasts
     fcast --out-of-sample --dynamic --quiet
     smpl full
     series fc_point = $fcast
-    series fc_se = $fcse    
+    series fc_se = $fcse
     list L = y fc_point fc_se
 
     return L

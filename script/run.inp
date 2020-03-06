@@ -3,7 +3,7 @@ set verbose off
 
 # SETTINGS
 #==========
-string DIR_WORK = "/home/at/git/covid_19_forecast" 		# <SET_PATH_HERE> e.g. "/home/git_project"
+string DIR_WORK = "" 		# <SET_PATH_HERE> e.g. "/home/git_project"
 string DATA_URL = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv"
 string INITIAL_DATE = "2020-01-22"			# 1st available observation of CSSE dataset
 scalar MAX_HORIZON = 7						# multi-step OoS forecast horizon

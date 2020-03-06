@@ -61,4 +61,4 @@ Next, for each country-province combination two exercises are conducted:
 # Up-to-date out-of-sample 7-days ahead forecasts
 
 
-<img src="./figures/forecast_arima_maxhorizon_7_mainland_china_anhui.png" width="425" title="Fig. 1" /> <img src="./figures/forecast_arima_maxhorizon_7_mainland_china_beijing.png" width="425" title="Fig. 2"/>
+<img src="./figures/forecast_arima_maxhorizon_7_mainland_china_anhui.png" width="425" alt="Fig. 1"/> <img src="./figures/forecast_arima_maxhorizon_7_mainland_china_beijing.png" width="425" alt="Fig. 2"/>

@@ -192,7 +192,7 @@ endloop
 
 
 if COMPILE_MARKDOWN_CMD # commands for showingh plots in README.md
-    string mdc = compile_markdown_plot_cmd("./figure", countries_ok, \
+    string mdc = compile_markdown_plot_cmd("./figures", countries_ok, \
       provinces_ok, MAX_HORIZON, SAVE_PLOT_AS)
     outfile "markdown_cmd.txt" --quiet
         print mdc

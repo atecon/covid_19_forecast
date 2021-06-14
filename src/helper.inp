@@ -1,0 +1,329 @@
+function list get_non_empty_series (const list L)
+    /* Get list of series with at least on valid observation. */
+
+    list R = null
+    loop foreach i L
+        if nobs(L.$i) > 0
+            R += $i
+        endif
+    endloop
+
+    return R
+end function
+
+
+function string filename_forecast_plot (const string country,
+                                        const string province,
+                                        const int MAX_HORIZON[1::],
+                                        const bool is_expost)
+    /* Compile filename for plot showing expost/ exante interval forecast. */
+
+    string expost = ""
+    expost = (is_expost > 0) ? "_expost" : expost
+
+    return sprintf("forecast_maxhorizon_%d_%s_%s%s", \
+      MAX_HORIZON, country, province, expost)
+end function
+
+
+function string filename_change_plot (const string country,
+                                        const string province,
+                                        const int MAX_HORIZON[1::])
+    /* Compile filename for plot showing realized and forecasted change in target series. */
+
+    return sprintf("forecast_maxhorizon_%d_%s_%s_first_difference", \
+      MAX_HORIZON, country, province)
+end function
+
+
+
+function string compile_markdown_plot_cmd (const string folder "Folder where plots are located",
+                                           const strings countries "Arrays of countries",
+                                           const strings provinces,
+                                           const int MAX_HORIZON[1::],
+                                           const string FILE_FORMAT)
+    /* Compile the markdown command for showing both exp-post and
+       ex-ante forecasting plots. The resulting string must be added
+    to the README.md file. */
+
+    if nelem(countries) != nelem(provinces)
+        funcerr "Arrays 'countries' and 'provinces' must be of same length."
+    endif
+
+    string markdown_cmd = ""
+
+    loop i=1..nelem(countries) -q
+        string pic1 = filename_forecast_plot(countries[i], provinces[i], MAX_HORIZON, 1)
+        string pic2 = filename_forecast_plot(countries[i], provinces[i], MAX_HORIZON, 0)
+        string pic3 = filename_change_plot(countries[i], provinces[i], MAX_HORIZON)
+
+        markdown_cmd += sprintf("<img src=\"%s/%s.%s\" width=\"260\"/> \
+          <img src=\"%s/%s.%s\" width=\"260\"/> <img src=\"%s/%s.%s\" width=\"260\"/>\n", \
+          folder, pic1, FILE_FORMAT, folder, pic2, FILE_FORMAT, folder, pic3, FILE_FORMAT)
+
+        markdown_cmd += sprintf("<em>%s - %s</em>\n\n", countries[i], provinces[i])
+    endloop
+
+    return markdown_cmd
+end function
+
+
+function list add_future_observations (const list data_set,
+                                       const int MAX_HORIZON)
+    /*Add future observations of out-of-sample forecasting. */
+
+    list newobs = null
+    scalar last_v_id = 2 + nelem(data_set)
+    loop i=(1+last_v_id)..(MAX_HORIZON+last_v_id) -q
+        list newobs += genseries(sprintf("v%d", i), NA)
+    endloop
+    return newobs
+end function
+
+
+function void print_panel_details (void)
+    printf "\n*** Your panel is ready for analysis.\n"
+    printf "\n*** Number of country-province combinations: %d\n", $nobs / $pd
+    printf "\n*** Number of observations for each country-province: %d\n", $pd
+end function
+
+
+function series fill_panel_gaps_of_constant (series x)
+/* Due to stacking the original data for obtaining a panel,
+      some series have gaps now which need to be filled. */
+
+    series ret = x
+    ret = (missing(ret)==1) ? pmin(ret) : ret
+
+    return ret
+end function
+
+function scalar time_dimension (const list data_set)
+    /* Determine time dimension of data set. */
+
+    list L = v*
+    return nelem(L)
+end function
+
+
+function strings get_distinct_names (const series x)
+    /* Retrieve country/region names and process strings. */
+    strings S = strvals(x)
+    loop foreach i S -q
+        string str = tolower(strstrip(S[i]))
+        str = strsub(str, " ", "_")
+        str = strsub(str, ",", "")
+        S[i] = str
+    endloop
+
+    return S
+end function
+
+function void print_countries (const strings countries)
+    printf "\nData covers the following countries:\n"
+    loop foreach i countries -q
+        printf "%s\n", countries[i]
+    endloop
+end function
+
+function string aggregate_data_and_store_csv (const list data_values)
+/* Each row of a series refers to confirmed cases in the i-th region,
+      and each series captures the confirmed cases over time. */
+
+    matrix mat = {data_values}
+    matrix daily_sums = sumc(mat)'
+    matrix non_zero_regions_per_day = sumc((mat .> 0))'
+    daily_sums ~= non_zero_regions_per_day
+
+    printf "\nData includes information over %d days\n", rows(daily_sums)
+    cnameset(daily_sums, "cases_confirmed non_zero_regions")
+    string filename = "aggregated_timeseries.csv"
+    mat2data(daily_sums, "aggregated_timeseries.csv")
+    printf "Succesfully stored aggregated data in file:\n\
+      %s/%s", $workdir, filename
+
+    return filename
+end function
+
+
+function list meanmodel_forecast (const series y,
+                                  const list xlist,
+                                  const int MAX_HORIZON[1::],
+                                  string *model_properties)
+    /* Estimate simple mean model plus optional exogenous and forecast out-of-sample. */
+
+    list FC = null
+    model_properties = sprintf("conditional mean model")
+    smpl ; -MAX_HORIZON
+
+    catch ols y const xlist --quiet
+    if $error
+        printf "\nError: Failed to estimate %s.\n", model_properties
+        return FC
+    endif
+
+    catch fcast --out-of-sample --quiet
+    smpl full
+    series fc_point = $fcast
+    series fc_se = $fcse
+    list FC = y fc_point fc_se
+
+    return FC
+end function
+
+
+function list arima_forecast (const series y,
+                              const list xlist,
+                              const bundle ARIMA_OPTS,
+                              string *model_properties)
+    /* Search for best ARIMA model by means of the auto_arima package and forecast out-of-sample. */
+
+    list FC = null
+    smpl ; -ARIMA_OPTS.MAX_HORIZON
+
+    bundle B = auto_arima(y, xlist, ARIMA_OPTS)
+
+    # Execute actual estimation: Just to make sure that estimation for the n-th best model does not fail, we loop over the first 10 best models and return the first model for which maximum-likeliihood estimations works.
+    scalar nth_best_model = NA
+    loop i=1..10
+        nth_best_model = $i
+        string arima_cmd = get_auto_arima_command(B, ARIMA_OPTS.INFO_CRIT, $i)
+        catch @arima_cmd --quiet
+        if $error == 0
+            break
+        endif
+    endloop
+
+    matrix params = get_auto_arima_parameters(B, ARIMA_OPTS.INFO_CRIT, nth_best_model)
+    if cols(params) == 6
+        model_properties = sprintf("ARIMA(%d,%d,%d|%d,%d,%d)", \
+            params[1], params[2], params[3], params[4], params[5], params[6])
+    else
+        model_properties = sprintf("ARIMA(%d,%d,%d)", params[1], params[2], params[3])
+    endif
+
+
+    catch fcast --out-of-sample --dynamic --quiet
+    smpl full
+    series fc_point = $fcast
+    series fc_se = $fcse
+    list FC = y fc_point fc_se
+
+    return FC
+end function
+
+
+function list historical_avg_forecast (const series y,
+                                       const int MAX_HORIZON[1::],
+                                       string *model_properties)
+    /* If the endogenous has no variance over the training set,
+      simply interpolate the average. */
+
+    list FC = null
+    model_properties = sprintf("Historical mean")
+    smpl ; -MAX_HORIZON
+
+    if sd(y) == 0
+        scalar ymean = mean(y)
+        smpl full
+        series fc_point = ymean
+        series fc_se = ymean
+        list FC = y fc_point fc_se
+    endif
+
+    return FC
+end function
+
+
+function list do_forecast (const series y,
+                           const list xlist[null],
+                           const bundle ARIMA_OPTS,
+                           string *model_properties)
+    /* Set training and test set, estimate model and compute
+       interval forecasts. We will try another (simpler model) in
+       case the former has failed being computed (for instance due
+    to convergence failure). */
+
+    list FC = null
+    scalar error = 0
+    string model_properties = ""
+    if !exists(xlist)
+        list xlist = null
+    endif
+
+    # Check whether the target variable has zero variance over the training set
+    list FC = historical_avg_forecast(y, ARIMA_OPTS.MAX_HORIZON, &model_properties)
+
+    # ARIMA type
+    if nelem(FC) == 0
+        list FC = arima_forecast(y, xlist, ARIMA_OPTS, &model_properties)
+    endif
+
+    # Return simple mean model
+    if nelem(FC) == 0
+        list FC = meanmodel_forecast(y, xlist, ARIMA_OPTS.MAX_HORIZON, &model_properties)
+    endif
+
+    return FC
+end function
+
+
+function void plot_forecast (const series y,
+                             const series fc_point,
+                             const series fc_se,
+                             const string title,
+                             const string filename "Full path or 'display'")
+    list L = y fc_point
+    string vname = sprintf("%s", argname(y))
+    setinfo y --graph-name=@vname
+
+    plot L
+        options with-lines time-series single-yaxis
+        options band-style=fill
+        options band=fc_point,fc_se,1.69726
+        literal set key top left
+        literal set grid
+        printf "set ylabel \"%s\"", argname(y)
+        printf "set title \"%s\"", title
+    end plot --output="@filename"
+end function
+
+
+function list get_diff_series_for_plot (const series y,
+                                        const series fc)
+    /* Get change in realizations and forecast series. */
+
+    series d_y = diff(y)
+    series d_fc = diff(fc)
+    series d_y_fc = diff((!missing(y)) ? y : fc)	# concatenate for computing 1st diff based on forecast
+    series d_fc = (time>=firstobs(fc)) ? d_y_fc : NA		# drop historic values, keep only forecasts
+    d_fc = int(d_fc)
+    list L = d_y d_fc
+
+    return L
+end function
+
+
+function void plot_change_in_y_and_fc (const series y,
+                                       const series fc,
+                                       const string title,
+                                       const string filename)
+    /* Compute change in both realized and forecasted confirmed_cases. */
+    list L = get_diff_series_for_plot(y, fc)
+
+    string str_y = sprintf("Change in %s", argname(y))
+    string str_fc = sprintf("Predicted change in %s", argname(y))
+    setinfo d_y --graph-name="@str_y"
+    setinfo d_fc --graph-name="@str_fc"
+    list L = d_y d_fc
+
+    plot L
+        options with-lines time-series single-yaxis
+        literal set key top left
+        literal set grid
+        literal set linetype 1 lc rgb "black"
+        literal set linetype 2 lc rgb "red" lw 2
+        printf "set ylabel \"%s\"", sprintf("Change per day in %s", argname(y))
+        printf "set title \"%s\"", title
+    end plot --output="@filename"
+end function

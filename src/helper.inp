@@ -213,7 +213,7 @@ function list arima_forecast (const series y,
 end function
 
 
-function list historical_avg_forecast (const series y,
+function list historical_avg_forecast (const series target,
                                        const int MAX_HORIZON[1::],
                                        string *model_properties)
     /* If the endogenous has no variance over the training set,
@@ -224,11 +224,11 @@ function list historical_avg_forecast (const series y,
     smpl ; -MAX_HORIZON
 
     if sd(y) == 0
-        scalar ymean = mean(y)
+        scalar ymean = mean(target)
         smpl full
         series fc_point = ymean
         series fc_se = ymean
-        list FC = y fc_point fc_se
+        list FC = target fc_point fc_se
     endif
 
     return FC
@@ -268,22 +268,27 @@ function list do_forecast (const series y,
 end function
 
 
-function void plot_forecast (const series y,
+function void plot_forecast (const series target,
                              const series fc_point,
                              const series fc_se,
                              const string title,
                              const string filename "Full path or 'display'")
-    list L = y fc_point
-    string vname = sprintf("%s", argname(y))
-    setinfo y --graph-name=@vname
+    /* */
+
+    list L = fc_point
+    L += target
+    string vname = sprintf("%s", argname(target))
+    setinfo target --graph-name="@vname"
+
+    scalar SE = 1.69726
 
     plot L
         options with-lines time-series single-yaxis
         options band-style=fill
-        options band=fc_point,fc_se,1.69726
+        options band=fc_point,fc_se,SE
         literal set key top left
         literal set grid
-        printf "set ylabel \"%s\"", argname(y)
+        printf "set ylabel \"%s\"", vname
         printf "set title \"%s\"", title
     end plot --output="@filename"
 end function

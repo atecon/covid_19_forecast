@@ -102,18 +102,19 @@ print_panel_details()
 
 # ANALYSIS
 #=========
-strings countries_ok = defarray()
-strings provinces_ok = defarray()
+strings countries_ok = array()
+strings provinces_ok = array()
 
-series log_confirmed_cases = log(confirmed_cases)
+series log_confirmed_cases = (confirmed_cases > 0) ? \
+                             log(confirmed_cases) : log(1 + confirmed_cases)
 
 
 string filename = sprintf("./figures/boxplot_log_confirmed_cases_by_time.%s", SAVE_PLOT_AS)
 boxplot log_confirmed_cases time --factorized \
   --output="@filename"
 string filename = sprintf("./figures/boxplot_log_confirmed_cases_by_unit.%s", SAVE_PLOT_AS)
-boxplot log_confirmed_cases unit --factorized \
-  --output="@filename"
+boxplot log_confirmed_cases unit --factorized --output="@filename"
+
 
 #panplot log_confirmed_cases --overlay --output=display
 
@@ -123,7 +124,7 @@ boxplot log_confirmed_cases unit --factorized \
 # Expost: Compute ARIMA based forecasts for each country-province combination
 #============================================================================
 smpl full
-loop i=min(unit)..max(unit) --quiet
+loop i=min(unit)..2 #max(unit)
 
     # define time-series set for each country-province
     smpl full
@@ -138,6 +139,7 @@ loop i=min(unit)..max(unit) --quiet
     else
         string province_name = ""
     endif
+
     if confirmed_cases[$tmax] < MINIMUM_CASES
         printf "Country '%s' and province '%s' has\n\
           currently less than %d confirmed cases.\n", country_name, province_name, MINIMUM_CASES
@@ -147,12 +149,13 @@ loop i=min(unit)..max(unit) --quiet
 
         # Expost analysis + plot multistep interval forecasts
         string model_properties = ""
-        list FC = do_forecast(confirmed_cases, , ARIMA_OPTS, &model_properties)
+        list FC = do_forecast(confirmed_cases, null, ARIMA_OPTS,\
+                              &model_properties)
 
-        if nelem(FC) == 0
-            printf "\nWarning: Target series includes only zeros for %s %s.\n\
-              No ARIMA model will be fitted.\n", country_name, province_name
-        else
+
+        if inlist(FC, "confirmed_cases") && inlist(FC, "fc_point") && \
+            inlist(FC, "fc_se")
+
             setobs 7 @INITIAL_DATE --time-series
             string date_of_information = obslabel($t2 - ARIMA_OPTS.MAX_HORIZON)
             string label = sprintf("Conditional on %s", date_of_information)
@@ -164,12 +167,19 @@ loop i=min(unit)..max(unit) --quiet
             string filename = sprintf("./figures/%s.%s", \
               filename_forecast_plot(country_name, province_name, ARIMA_OPTS.MAX_HORIZON, 1), SAVE_PLOT_AS)
 
-            plot_forecast(confirmed_cases, fc_point, fc_se, title, filename)
+            series target = confirmed_cases
+            plot_forecast(target, fc_point, fc_se, title, filename)
+        else
+            printf "\nWarning: Target series includes only zeros for %s %s.\n\
+              No ARIMA model will be fitted.\n", country_name, province_name
+            flush
         endif
     endif
 endloop
 smpl full
 
+
+stop
 
 # Out-of-sample for the forthcoming days for each country-province combination
 #=============================================================================

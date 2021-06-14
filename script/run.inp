@@ -3,7 +3,13 @@ set verbose off
 
 # SETTINGS
 #==========
-string DIR_WORK = "/home/pi/git/covid_19_forecast" 	#"" 		# <SET_PATH_HERE> e.g. "/home/git_project"
+
+DIR_WORK = getenv("DIR_WORK")  # read out variable passed from bash script
+
+if DIR_WORK == ""
+    # <SET_PATH_HERE> e.g. "/home/git_project"
+    string DIR_WORK = "/home/pi/git/covid_19_forecast"
+endif
 string DATA_URL = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv"
 string INITIAL_DATE = "2020-01-22"			# 1st available observation of CSSE dataset
 scalar MINIMUM_CASES = 30					# Minimal number of confirmed cases at latest observation for consideration
@@ -100,6 +106,7 @@ strings countries_ok = defarray()
 strings provinces_ok = defarray()
 
 series log_confirmed_cases = log(confirmed_cases)
+
 
 string filename = sprintf("./figures/boxplot_log_confirmed_cases_by_time.%s", SAVE_PLOT_AS)
 boxplot log_confirmed_cases time --factorized \

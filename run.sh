@@ -11,6 +11,8 @@ rm -rf ./figures/*.png
 mkdir -p figures
 
 # Execute gretl job
+
+DIR_WORK=${DIR} \
 gretlcli -b -e -q ./script/run.inp
 
 if [ $? -eq 0 ]

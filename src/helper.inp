@@ -223,7 +223,7 @@ function list historical_avg_forecast (const series target,
     model_properties = sprintf("Historical mean")
     smpl ; -MAX_HORIZON
 
-    if sd(y) == 0
+    if sd(target) == 0
         scalar ymean = mean(target)
         smpl full
         series fc_point = ymean
@@ -235,7 +235,7 @@ function list historical_avg_forecast (const series target,
 end function
 
 
-function list do_forecast (const series y,
+function list do_forecast (const series target,
                            const list xlist[null],
                            const bundle ARIMA_OPTS,
                            string *model_properties)
@@ -252,16 +252,18 @@ function list do_forecast (const series y,
     endif
 
     # Check whether the target variable has zero variance over the training set
-    list FC = historical_avg_forecast(y, ARIMA_OPTS.MAX_HORIZON, &model_properties)
+    list FC = historical_avg_forecast(target, ARIMA_OPTS.MAX_HORIZON,\
+                                      &model_properties)
 
     # ARIMA type
     if nelem(FC) == 0
-        list FC = arima_forecast(y, xlist, ARIMA_OPTS, &model_properties)
+        list FC = arima_forecast(target, xlist, ARIMA_OPTS, &model_properties)
     endif
 
     # Return simple mean model
     if nelem(FC) == 0
-        list FC = meanmodel_forecast(y, xlist, ARIMA_OPTS.MAX_HORIZON, &model_properties)
+        list FC = meanmodel_forecast(target, xlist, ARIMA_OPTS.MAX_HORIZON,\
+                                     &model_properties)
     endif
 
     return FC
@@ -274,6 +276,8 @@ function void plot_forecast (const series target,
                              const string title,
                              const string filename "Full path or 'display'")
     /* */
+
+    varlist --type=series
 
     list L = fc_point
     L += target

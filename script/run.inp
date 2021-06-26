@@ -1,5 +1,6 @@
 clear
 set verbose off
+set warnings off
 
 # SETTINGS
 #==========
@@ -8,7 +9,8 @@ DIR_WORK = getenv("DIR_WORK")  # read out variable passed from bash script
 
 if DIR_WORK == ""
     # <SET_PATH_HERE> e.g. "/home/git_project"
-    string DIR_WORK = "/home/pi/git/covid_19_forecast"
+    # string DIR_WORK = "/home/pi/git/covid_19_forecast"
+    DIR_WORK = "/home/at/git/covid_19_forecast"
 endif
 string DATA_URL = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv"
 string INITIAL_DATE = "2020-01-22"			# 1st available observation of CSSE dataset
@@ -34,10 +36,7 @@ scalar ARIMA_OPTS.max_D = 0                 # seasonal differencing order
 scalar ARIMA_OPTS.min_Q = 0                 # seasonal MA order
 scalar ARIMA_OPTS.max_Q = 1                 # seasonal MA order
 
-# not relevant for forecasting!
-scalar COMPILE_MARKDOWN_CMD = 1				# compile markdown command for inserting forecasting plots to README.md
 #===================
-
 if DIR_WORK != ""
     set workdir @DIR_WORK
 endif
@@ -52,6 +51,7 @@ if $error
     pkg install auto_arima                  # download from package server
     include auto_arima.gfn
 endif
+
 
 
 # Download and open latest dataset
@@ -77,7 +77,6 @@ delete L --force
 setobs N 1:1 --stacked-cross-section
 
 
-
 # Fill gaps in country series
 series country = fill_panel_gaps_of_constant(CountryRegion)
 series province = fill_panel_gaps_of_constant(ProvinceState)
@@ -99,8 +98,6 @@ genr time
 print_panel_details()
 
 
-
-# ANALYSIS
 #=========
 strings countries_ok = array()
 strings provinces_ok = array()
@@ -109,49 +106,41 @@ series log_confirmed_cases = (confirmed_cases > 0) ? \
                              log(confirmed_cases) : log(1 + confirmed_cases)
 
 
-string filename = sprintf("./figures/boxplot_log_confirmed_cases_by_time.%s", SAVE_PLOT_AS)
-boxplot log_confirmed_cases time --factorized \
-  --output="@filename"
-string filename = sprintf("./figures/boxplot_log_confirmed_cases_by_unit.%s", SAVE_PLOT_AS)
-boxplot log_confirmed_cases unit --factorized --output="@filename"
-
-
-#panplot log_confirmed_cases --overlay --output=display
-
-#gnuplot cases_confirmed non_zero_regions \
-#  --time-series --with-lines --output=display
 
 # Expost: Compute ARIMA based forecasts for each country-province combination
 #============================================================================
 smpl full
-loop i=min(unit)..2 #max(unit)
+loop i=1..2
 
     # define time-series set for each country-province
-    smpl full
-    setobs unit time --panel-vars
-    smpl unit == $i && ok(confirmed_cases) --restrict
+    smpl unit == $i --restrict --replace
     setobs 7 @INITIAL_DATE --time-series
 
     string country_name = strvals(country)[values(country)]
-
-    if sum(ok(province))	# for some countries data on province level not available
+    string province_name = "" # for some countries data on province level is not available
+    if sum(ok(province))
         string province_name = strvals(province)[values(province)]
-    else
-        string province_name = ""
     endif
 
-    if confirmed_cases[$tmax] < MINIMUM_CASES
-        printf "Country '%s' and province '%s' has\n\
-          currently less than %d confirmed cases.\n", country_name, province_name, MINIMUM_CASES
+
+    printf "INFO: Start analysis for country '%s' and province '%s'.\n\n",\
+            country_name, province_name
+    flush
+
+    scalar sufficient_cases_lastly = confirmed_cases[$tmax - ARIMA_OPTS.MAX_HORIZON] > MINIMUM_CASES
+    scalar has_minimum_nobs = nobs(confirmed_cases) >= 20
+
+
+    if sufficient_cases_lastly == FALSE || has_minimum_nobs == FALSE
+        printf "Country '%s' (province '%s') has currently less\n\
+                than %d confirmed cases OR less than 20 valid observations.\n\
+                Ignore.", country_name, province_name, MINIMUM_CASES
     else
-        printf "Start forecasting for:\n\
-          country '%s' and province '%s'\n", country_name, province_name
 
         # Expost analysis + plot multistep interval forecasts
         string model_properties = ""
         list FC = do_forecast(confirmed_cases, null, ARIMA_OPTS,\
                               &model_properties)
-
 
         if inlist(FC, "confirmed_cases") && inlist(FC, "fc_point") && \
             inlist(FC, "fc_se")
@@ -167,87 +156,18 @@ loop i=min(unit)..2 #max(unit)
             string filename = sprintf("./figures/%s.%s", \
               filename_forecast_plot(country_name, province_name, ARIMA_OPTS.MAX_HORIZON, 1), SAVE_PLOT_AS)
 
-            series target = confirmed_cases
-            plot_forecast(target, fc_point, fc_se, title, filename)
+
+            summary confirmed_cases  # for debugging only
+
+            plot_forecast(confirmed_cases, fc_point, fc_se, title, filename)
+
         else
+
             printf "\nWarning: Target series includes only zeros for %s %s.\n\
               No ARIMA model will be fitted.\n", country_name, province_name
             flush
         endif
+
     endif
 endloop
 smpl full
-
-
-stop
-
-# Out-of-sample for the forthcoming days for each country-province combination
-#=============================================================================
-smpl full
-loop i=min(unit)..max(unit) --quiet
-
-    # define time-series set for each country-province
-    smpl full
-    setobs unit time --panel-vars
-    smpl unit == $i --restrict
-    setobs 7 @INITIAL_DATE --time-series
-
-    string country_name = strvals(country)[values(country)]
-    if sum(ok(province))	# for some countries data on province level are not available
-        string province_name = strvals(province)[values(province)]
-    else
-        string province_name = ""
-    endif
-
-    if confirmed_cases[$tmax - ARIMA_OPTS.MAX_HORIZON] < MINIMUM_CASES
-        printf "Country '%s' and province '%s' has\n\
-          currently less than %d confirmed cases.\n", country_name, province_name, MINIMUM_CASES
-    else
-        printf "Start forecasting for:\n\
-          country '%s' and province '%s'\n", country_name, province_name
-
-        # Out-of-sample analysis + plot multistep interval forecasts
-        string model_properties = ""
-        list FC = do_forecast(confirmed_cases, , ARIMA_OPTS, &model_properties)
-
-        if nelem(FC) == 0
-            printf "\nWarning: Target series includes only zeros for %s %s.\n\
-              No ARIMA model will be fitted.\n", country_name, province_name
-        else
-            setobs 7 @INITIAL_DATE --time-series
-            string date_of_information = obslabel($t2 - ARIMA_OPTS.MAX_HORIZON)
-            string label = sprintf("Conditional on %s", date_of_information)
-            setinfo fc_point --graph-name="@label"
-
-            string title = sprintf("%s - %s [%s, 90\% forecast interval]", \
-              country_name, province_name, model_properties)
-            string filename = sprintf("./figures/%s.%s", \
-              filename_forecast_plot(country_name, province_name, ARIMA_OPTS.MAX_HORIZON, 0), SAVE_PLOT_AS)
-            plot_forecast(confirmed_cases, fc_point, fc_se, title, filename)
-
-            countries_ok += sprintf("%s", country_name)
-            provinces_ok += sprintf("%s", province_name)
-
-            string title = sprintf("New cases per day in %s - %s [%s]", \
-              country_name, province_name, model_properties)
-            string filename = sprintf("./figures/%s.%s", \
-              filename_change_plot(country_name, province_name, ARIMA_OPTS.MAX_HORIZON), SAVE_PLOT_AS)
-            plot_change_in_y_and_fc(confirmed_cases, fc_point, title, filename)
-
-        endif
-    endif
-endloop
-
-
-if COMPILE_MARKDOWN_CMD # commands for showingh plots in README.md
-    string mdc = compile_markdown_plot_cmd("./figures", countries_ok, \
-      provinces_ok, ARIMA_OPTS.MAX_HORIZON, SAVE_PLOT_AS)
-    outfile "markdown_cmd.txt" --quiet
-        print mdc
-    end outfile
-endif
-
-
-
-printf "\nAnalysis finished.\n\n"
-quit
